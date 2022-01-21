@@ -4,23 +4,31 @@ import java.time.LocalTime;
 
 public class DueDateCalculator {
 
-    private LocalTime startHour;
-    private LocalTime endHour;
+    private LocalTime startTime;
+    private LocalTime endTime;
 
-    public DueDateCalculator(LocalTime startHour, LocalTime endHour) {
-        validateArguments(startHour, endHour);
-        this.startHour = startHour;
-        this.endHour = endHour;
+    public DueDateCalculator(LocalTime startTime, LocalTime endTime) {
+        validateArguments(startTime, endTime);
+        this.startTime = startTime;
+        this.endTime = endTime;
     }
 
-    private void validateArguments(LocalTime startHour, LocalTime endHour) {
-        if (startHour == null) {
-            throw new IllegalArgumentException("Start hour is required!");
-        } else if (endHour == null) {
-            throw new IllegalArgumentException("End hour is required!");
+    private void validateArguments(LocalTime startTime, LocalTime endTime) {
+        validateNullCheck(startTime, endTime);
+        validateStartTimeIsBeforeEndTime(startTime, endTime);
+    }
+
+    private void validateNullCheck(LocalTime startTime, LocalTime endTime) {
+        if (startTime == null) {
+            throw new IllegalArgumentException("Start time is required!");
+        } else if (endTime == null) {
+            throw new IllegalArgumentException("End time is required!");
         }
-        if (startHour.isAfter(endHour)) {
-            throw new IllegalArgumentException("Start hour is after end hour!");
+    }
+
+    private void validateStartTimeIsBeforeEndTime(LocalTime startTime, LocalTime endTime) {
+        if (startTime.isAfter(endTime) || startTime.equals(endTime)) {
+            throw new IllegalArgumentException("Start time must be before end time!");
         }
     }
 
