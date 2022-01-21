@@ -40,6 +40,9 @@ public class DueDateCalculator {
 
     public LocalDateTime calculateDueDate(LocalDateTime submitDate, int turnAroundTime) throws InvalidSubmitDateException, InvalidTurnAroundTimeException {
         validateCalculateDueDateArguments(submitDate, turnAroundTime);
+        if (turnAroundTime < 8) {
+            return submitDate.plusHours(turnAroundTime);
+        }
         return null;
     }
 

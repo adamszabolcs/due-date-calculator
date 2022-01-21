@@ -58,4 +58,10 @@ class DueDateCalculatorTest {
         assertThrows(InvalidSubmitDateException.class, () -> calculator.calculateDueDate(null, 2));
     }
 
+    @Test
+    void calculateDueDateShouldReturnSameDayWhenTurnAroundTimeIsLessThanEightHours() throws InvalidSubmitDateException, InvalidTurnAroundTimeException {
+        LocalDateTime expected = LocalDateTime.of(2022, 1, 21, 11, 0);
+        assertEquals(expected, calculator.calculateDueDate(LocalDateTime.of(2022, 1, 21, 9, 0), 2));
+    }
+
 }
