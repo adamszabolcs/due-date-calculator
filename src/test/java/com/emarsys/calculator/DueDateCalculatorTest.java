@@ -1,7 +1,9 @@
 package com.emarsys.calculator;
 
+import com.emarsys.calculator.exception.InvalidSubmitDateException;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -33,6 +35,16 @@ class DueDateCalculatorTest {
     @Test
     void constructorShouldThrowExceptionIfStartTimeEqualsEndTime() {
         assertThrows(IllegalArgumentException.class, () -> new DueDateCalculator(LocalTime.of(9, 12), LocalTime.of(9, 12)));
+    }
+
+    @Test
+    void invalidSubmitDateShouldThrownIfSubmitDateIsWeekendDay() {
+        assertThrows(InvalidSubmitDateException.class, () -> calculator.calculateDueDate(LocalDateTime.of(2022, 1, 22, 9, 1), 2));
+    }
+
+    @Test
+    void invalidSubmitDateShouldThrownIfSubmitDateTimeIsNotInWorkingHours() {
+        assertThrows(InvalidSubmitDateException.class, () -> calculator.calculateDueDate(LocalDateTime.of(2022, 1, 21, 8, 59), 2));
     }
 
 }

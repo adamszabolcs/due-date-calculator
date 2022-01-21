@@ -1,5 +1,10 @@
 package com.emarsys.calculator;
 
+import com.emarsys.calculator.exception.InvalidSubmitDateException;
+
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public class DueDateCalculator {
@@ -30,6 +35,15 @@ public class DueDateCalculator {
         if (startTime.isAfter(endTime) || startTime.equals(endTime)) {
             throw new IllegalArgumentException("Start time must be before end time!");
         }
+    }
+
+    public LocalDateTime calculateDueDate(LocalDateTime submitDate, int turnAroundTime) throws InvalidSubmitDateException {
+        if (submitDate.getDayOfWeek().equals(DayOfWeek.SATURDAY) || submitDate.getDayOfWeek().equals(DayOfWeek.SUNDAY)) {
+            throw new InvalidSubmitDateException("Submit date is a weekend day!");
+        } else if (submitDate.toLocalTime().isBefore(startTime) || submitDate.toLocalTime().isAfter(endTime)) {
+            throw new InvalidSubmitDateException("Submit time is not in working hours!");
+        }
+        return null;
     }
 
 }
