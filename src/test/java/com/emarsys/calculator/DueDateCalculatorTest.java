@@ -16,23 +16,23 @@ class DueDateCalculatorTest {
     }
 
     @Test
-    void constructorShouldThrowExceptionIfStartHourIsAfterEndHour() {
+    void constructorShouldThrowExceptionIfStartTimeIsAfterEndTime() {
         assertThrows(IllegalArgumentException.class, () -> new DueDateCalculator(LocalTime.of(12, 0), LocalTime.of(9, 0)));
     }
 
     @Test
-    void constructorShouldThrowIllegalArgumentExceptionIfStartHourIsNull() {
+    void constructorShouldThrowIllegalArgumentExceptionIfStartTimeIsNull() {
         assertThrows(IllegalArgumentException.class, () -> new DueDateCalculator(null, LocalTime.of(17, 0)));
     }
 
     @Test
-    void constructorShouldThrowIllegalArgumentExceptionIfEndHourIsNull() {
+    void constructorShouldThrowIllegalArgumentExceptionIfEndTimeIsNull() {
         assertThrows(IllegalArgumentException.class, () -> new DueDateCalculator(LocalTime.of(9, 0), null));
     }
 
     @Test
-    void constructorShouldThrowExceptionIfStartHourEqualsEndHour() {
-        assertThrows(IllegalArgumentException.class, () -> new DueDateCalculator(LocalTime.of(9, 0), LocalTime.of(9, 0)));
+    void constructorShouldThrowExceptionIfStartTimeEqualsEndTime() {
+        assertThrows(IllegalArgumentException.class, () -> new DueDateCalculator(LocalTime.of(9, 12), LocalTime.of(9, 12)));
     }
 
 }
