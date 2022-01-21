@@ -1,9 +1,9 @@
 package com.emarsys.calculator;
 
 import com.emarsys.calculator.exception.InvalidSubmitDateException;
+import com.emarsys.calculator.exception.InvalidTurnAroundTimeException;
 
 import java.time.DayOfWeek;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
@@ -13,17 +13,17 @@ public class DueDateCalculator {
     private LocalTime endTime;
 
     public DueDateCalculator(LocalTime startTime, LocalTime endTime) {
-        validateArguments(startTime, endTime);
+        validateConstructorArguments(startTime, endTime);
         this.startTime = startTime;
         this.endTime = endTime;
     }
 
-    private void validateArguments(LocalTime startTime, LocalTime endTime) {
-        validateNullCheck(startTime, endTime);
+    private void validateConstructorArguments(LocalTime startTime, LocalTime endTime) {
+        validateConstructorArgumentNullCheck(startTime, endTime);
         validateStartTimeIsBeforeEndTime(startTime, endTime);
     }
 
-    private void validateNullCheck(LocalTime startTime, LocalTime endTime) {
+    private void validateConstructorArgumentNullCheck(LocalTime startTime, LocalTime endTime) {
         if (startTime == null) {
             throw new IllegalArgumentException("Start time is required!");
         } else if (endTime == null) {
@@ -37,13 +37,23 @@ public class DueDateCalculator {
         }
     }
 
-    public LocalDateTime calculateDueDate(LocalDateTime submitDate, int turnAroundTime) throws InvalidSubmitDateException {
-        if (submitDate.getDayOfWeek().equals(DayOfWeek.SATURDAY) || submitDate.getDayOfWeek().equals(DayOfWeek.SUNDAY)) {
+    public LocalDateTime calculateDueDate(LocalDateTime submitDate, int turnAroundTime) throws InvalidSubmitDateException, InvalidTurnAroundTimeException {
+        validateCalculateDueDateArguments(submitDate, turnAroundTime);
+        return null;
+    }
+
+    private void validateCalculateDueDateArguments(LocalDateTime submitDate, int turnAroundTime) throws InvalidSubmitDateException, InvalidTurnAroundTimeException {
+        DayOfWeek dayOfWeek = submitDate.getDayOfWeek();
+        LocalTime submitTime = submitDate.toLocalTime();
+
+        if (dayOfWeek.equals(DayOfWeek.SATURDAY) || dayOfWeek.equals(DayOfWeek.SUNDAY)) {
             throw new InvalidSubmitDateException("Submit date is a weekend day!");
-        } else if (submitDate.toLocalTime().isBefore(startTime) || submitDate.toLocalTime().isAfter(endTime)) {
+        } else if (submitTime.isBefore(startTime) || submitTime.isAfter(endTime)) {
             throw new InvalidSubmitDateException("Submit time is not in working hours!");
         }
-        return null;
+        if (turnAroundTime < 0) {
+            throw new InvalidTurnAroundTimeException("Turnaround time cannot be negative!");
+        }
     }
 
 }

@@ -1,6 +1,7 @@
 package com.emarsys.calculator;
 
 import com.emarsys.calculator.exception.InvalidSubmitDateException;
+import com.emarsys.calculator.exception.InvalidTurnAroundTimeException;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -45,6 +46,11 @@ class DueDateCalculatorTest {
     @Test
     void invalidSubmitDateShouldThrownIfSubmitDateTimeIsNotInWorkingHours() {
         assertThrows(InvalidSubmitDateException.class, () -> calculator.calculateDueDate(LocalDateTime.of(2022, 1, 21, 8, 59), 2));
+    }
+
+    @Test
+    void invalidTurnAroundTimeExceptionShouldThrownIfTurnAroundTimeIsNegative() {
+        assertThrows(InvalidTurnAroundTimeException.class, () -> calculator.calculateDueDate(LocalDateTime.of(2022, 1, 21, 9, 1), -4));
     }
 
 }
