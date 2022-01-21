@@ -53,4 +53,9 @@ class DueDateCalculatorTest {
         assertThrows(InvalidTurnAroundTimeException.class, () -> calculator.calculateDueDate(LocalDateTime.of(2022, 1, 21, 9, 1), -4));
     }
 
+    @Test
+    void invalidSubmitDateShouldThrownIfSubmitDateIsNull() {
+        assertThrows(InvalidSubmitDateException.class, () -> calculator.calculateDueDate(null, 2));
+    }
+
 }

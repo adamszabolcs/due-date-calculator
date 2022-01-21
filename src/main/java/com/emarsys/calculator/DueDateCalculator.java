@@ -12,6 +12,7 @@ public class DueDateCalculator {
     private LocalTime startTime;
     private LocalTime endTime;
 
+
     public DueDateCalculator(LocalTime startTime, LocalTime endTime) {
         validateConstructorArguments(startTime, endTime);
         this.startTime = startTime;
@@ -43,16 +44,37 @@ public class DueDateCalculator {
     }
 
     private void validateCalculateDueDateArguments(LocalDateTime submitDate, int turnAroundTime) throws InvalidSubmitDateException, InvalidTurnAroundTimeException {
+        validateSubmitDateIsNotNull(submitDate);
+
         DayOfWeek dayOfWeek = submitDate.getDayOfWeek();
         LocalTime submitTime = submitDate.toLocalTime();
 
-        if (dayOfWeek.equals(DayOfWeek.SATURDAY) || dayOfWeek.equals(DayOfWeek.SUNDAY)) {
-            throw new InvalidSubmitDateException("Submit date is a weekend day!");
-        } else if (submitTime.isBefore(startTime) || submitTime.isAfter(endTime)) {
-            throw new InvalidSubmitDateException("Submit time is not in working hours!");
+        validateSubmitDateIsNotOnWeekend(dayOfWeek);
+        validateSubmitDateTimeIsDuringWorkingHours(submitTime);
+        validateTurnAroundTimeIsNotNegative(turnAroundTime);
+    }
+
+    private void validateSubmitDateIsNotNull(LocalDateTime submitDate) throws InvalidSubmitDateException {
+        if (submitDate == null) {
+            throw new InvalidSubmitDateException("Submit date is required!");
         }
+    }
+
+    private void validateSubmitDateIsNotOnWeekend(DayOfWeek dayOfWeek) throws InvalidSubmitDateException {
+        if (dayOfWeek.equals(DayOfWeek.SATURDAY) || dayOfWeek.equals(DayOfWeek.SUNDAY)) {
+            throw new InvalidSubmitDateException("Submit date is on weekend!");
+        }
+    }
+
+    private void validateSubmitDateTimeIsDuringWorkingHours(LocalTime submitTime) throws InvalidSubmitDateException {
+        if (submitTime.isBefore(startTime) || submitTime.isAfter(endTime)) {
+            throw new InvalidSubmitDateException("Submit time is not during working hours!");
+        }
+    }
+
+    private void validateTurnAroundTimeIsNotNegative(int turnAroundTime) throws InvalidTurnAroundTimeException {
         if (turnAroundTime < 0) {
-            throw new InvalidTurnAroundTimeException("Turnaround time cannot be negative!");
+            throw new InvalidTurnAroundTimeException("Turnaround time should be a positive integer!");
         }
     }
 
