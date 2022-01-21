@@ -20,4 +20,14 @@ class DueDateCalculatorTest {
         assertThrows(IllegalArgumentException.class, () -> new DueDateCalculator(LocalTime.of(12, 0), LocalTime.of(9, 0)));
     }
 
+    @Test
+    void constructorShouldThrowIllegalArgumentExceptionIfStartHourIsNull() {
+        assertThrows(IllegalArgumentException.class, () -> new DueDateCalculator(null, LocalTime.of(17, 0)));
+    }
+
+    @Test
+    void constructorShouldThrowIllegalArgumentExceptionIfEndHourIsNull() {
+        assertThrows(IllegalArgumentException.class, () -> new DueDateCalculator(LocalTime.of(9, 0), null));
+    }
+
 }
