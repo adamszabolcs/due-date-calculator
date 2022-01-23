@@ -46,19 +46,18 @@ public class DueDateCalculator {
 
         if (isDueDateIsOnTheSameDay(submitDate, turnAroundTime)) {
             return submitDate.plusHours(turnAroundTime);
-        } else {
-            LocalDateTime dueDate = submitDate;
-            int plusDays = turnAroundTime / workingHours;
-            int remainingHours = turnAroundTime % workingHours;
-
-            if (submitDate.plusHours(remainingHours).toLocalTime().isAfter(endTime)) {
-                plusDays++;
-                remainingHours -= endTime.minusHours(submitDate.getHour()).getHour();
-                dueDate = dueDate.withHour(startTime.getHour());
-            }
-            dueDate = setDueDateToAppropriateWorkDay(dueDate, plusDays);
-            return dueDate.plusHours(remainingHours);
         }
+        LocalDateTime dueDate = submitDate;
+        int plusDays = turnAroundTime / workingHours;
+        int remainingHours = turnAroundTime % workingHours;
+
+        if (submitDate.plusHours(remainingHours).toLocalTime().isAfter(endTime)) {
+            plusDays++;
+            remainingHours -= endTime.minusHours(submitDate.getHour()).getHour();
+            dueDate = dueDate.withHour(startTime.getHour());
+        }
+        dueDate = setDueDateToAppropriateWorkDay(dueDate, plusDays);
+        return dueDate.plusHours(remainingHours);
     }
 
     private void validateCalculateDueDateArguments(LocalDateTime submitDate, int turnAroundTime) throws InvalidSubmitDateException, InvalidTurnAroundTimeException {
