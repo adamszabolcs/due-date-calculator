@@ -9,14 +9,17 @@ import java.time.LocalTime;
 
 public class DueDateCalculator {
 
-    private LocalTime startTime;
-    private LocalTime endTime;
+    private final LocalTime startTime;
+    private final LocalTime endTime;
+    private final int workingHours;
 
+    private static final int NUMBER_OF_WEEKEND_DAYS = 2;
 
     public DueDateCalculator(LocalTime startTime, LocalTime endTime) {
         validateConstructorArguments(startTime, endTime);
         this.startTime = startTime;
         this.endTime = endTime;
+        this.workingHours = endTime.getHour() - startTime.getHour();
     }
 
     private void validateConstructorArguments(LocalTime startTime, LocalTime endTime) {
@@ -40,20 +43,28 @@ public class DueDateCalculator {
 
     public LocalDateTime calculateDueDate(LocalDateTime submitDate, int turnAroundTime) throws InvalidSubmitDateException, InvalidTurnAroundTimeException {
         validateCalculateDueDateArguments(submitDate, turnAroundTime);
-        if (turnAroundTime < 8) {
+
+        if (isDueDateIsOnTheSameDay(submitDate, turnAroundTime)) {
             return submitDate.plusHours(turnAroundTime);
+        } else {
+            LocalDateTime dueDate = submitDate;
+            int plusDays = turnAroundTime / workingHours;
+            int remainingHours = turnAroundTime % workingHours;
+
+            if (submitDate.plusHours(remainingHours).toLocalTime().isAfter(endTime)) {
+                plusDays++;
+                remainingHours -= endTime.minusHours(submitDate.getHour()).getHour();
+                dueDate = dueDate.withHour(startTime.getHour());
+            }
+            dueDate = setDueDateToAppropriateWorkDay(dueDate, plusDays);
+            return dueDate.plusHours(remainingHours);
         }
-        return null;
     }
 
     private void validateCalculateDueDateArguments(LocalDateTime submitDate, int turnAroundTime) throws InvalidSubmitDateException, InvalidTurnAroundTimeException {
         validateSubmitDateIsNotNull(submitDate);
-
-        DayOfWeek dayOfWeek = submitDate.getDayOfWeek();
-        LocalTime submitTime = submitDate.toLocalTime();
-
-        validateSubmitDateIsNotOnWeekend(dayOfWeek);
-        validateSubmitDateTimeIsDuringWorkingHours(submitTime);
+        validateSubmitDateIsNotOnWeekend(submitDate.getDayOfWeek());
+        validateSubmitDateTimeIsDuringWorkingHours(submitDate.toLocalTime());
         validateTurnAroundTimeIsNotNegative(turnAroundTime);
     }
 
@@ -81,4 +92,20 @@ public class DueDateCalculator {
         }
     }
 
+    private boolean isDueDateIsOnTheSameDay(LocalDateTime submitDate, int turnAroundTime) {
+        LocalDateTime endOfSubmitDate = submitDate.withHour(endTime.getHour()).withMinute(endTime.getMinute());
+
+        return submitDate.plusHours(turnAroundTime).isBefore(endOfSubmitDate) ||
+                submitDate.plusHours(turnAroundTime).toLocalTime().equals(endTime);
+    }
+
+    private LocalDateTime setDueDateToAppropriateWorkDay(LocalDateTime dueDate, int days) {
+        for (int i = days; i > 0; i--) {
+            dueDate = dueDate.plusDays(1);
+            if (dueDate.getDayOfWeek().equals(DayOfWeek.SATURDAY)) {
+                dueDate = dueDate.plusDays(NUMBER_OF_WEEKEND_DAYS);
+            }
+        }
+        return dueDate;
+    }
 }
