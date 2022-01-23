@@ -21,4 +21,4 @@ values are set between 9AM to 5PM.)
 
 • maven (apache-maven-3.6.3)
 
-You can run the tests with the 'mvn install' or 'mvn test'.
+You can run the tests with the 'mvn install' or 'mvn test' command.
